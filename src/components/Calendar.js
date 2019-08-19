@@ -161,6 +161,14 @@ export default class Calendar extends Component {
     return { items }
   }
   render(){
+    const ColoredLine = ({ color }) => (
+      <View
+        style={{
+          borderBottomColor: color,
+          borderBottomWidth: 1
+        }}
+      />
+    );
     return(
       <ScrollView>
         {this.state.items.map(item =>
@@ -175,7 +183,8 @@ export default class Calendar extends Component {
               <View style = {styles.wrapper}>
                 <View style={styles.dateWrapper}>
                   <Text style= {styles.date}>{item.date[0]}</Text>
-                  <Text style= {styles.date}>{item.date[1]}</Text>
+                  <Text style= {styles.dateNumber}>{item.date[1]}</Text>
+                  <ColoredLine color="green" />
                   <Text style= {styles.date}>{item.date[2]}</Text>
                 </View>
                 <View style={styles.titleWrapper}>
@@ -191,17 +200,9 @@ export default class Calendar extends Component {
             <View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => Linking.openURL(item.ticket)}
-              >
-                <Text>GET TIX</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity
-                style={styles.button}
                 onPress={() => this.props.navigation.navigate('Details', {item})}
               >
-                <Text>EVENT DETAILS</Text>
+                <Text>TICKETS & EVENT DETAILS</Text>
               </TouchableOpacity>
             </View>
           </View>)}
@@ -228,16 +229,24 @@ const styles = StyleSheet.create ({
  },
  dateWrapper:{
    paddingTop: 10,
-   width: '20%'
- },
- date:{
+   width: '20%',
    marginLeft: 10,
    paddingRight: 5,
+ },
+ date:{
    height: 30,
    lineHeight: 30,
    textAlign: 'center',
    textTransform: 'uppercase',
-   fontSize: 14
+   fontSize: 14,
+   fontWeight: 'bold'
+ },
+ dateNumber:{
+   height: 30,
+   lineHeight: 30,
+   textAlign: 'center',
+   textTransform: 'uppercase',
+   fontSize: 24
  },
  imgWrapper:{
    width: '90%'

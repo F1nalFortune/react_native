@@ -70,6 +70,11 @@ export default class App extends React.Component {
       handleCreateTime = (time) => {
         //ADD 0 PLACEHOLDER
         var showtime = time.replace("SHOW STARTS @ ", "");
+        var minutes = showtime.substring(showtime.length - 3)
+        showtime = showtime.substring(0, showtime.length - 3)
+        showtime = parseInt(showtime) + 12
+        showtime = showtime.toString();
+        showtime = showtime + minutes
         return showtime
       }
       // console.log(props.navigation.getParam('item').information[3])
@@ -77,10 +82,10 @@ export default class App extends React.Component {
 
       var eventDate = handleCreateDate(props.navigation.getParam('item').date);
       var eventTime = handleCreateTime(props.navigation.getParam('item').information[3])
-      var fullDate = eventDate + " " + eventTime + " UTC";
+      var fullDate = eventDate + " " + eventTime + " GMT-0400 (Eastern Daylight Time)";
       var startDate = new Date(fullDate)
 
-      var endDate = eventDate + " " + eventTime + " UTC";
+      var endDate = eventDate + " " + eventTime + " GMT-0400 (Eastern Daylight Time)";
       endDate = new Date(endDate)
       endDate.setHours(endDate.getHours() + 1)
       console.log("Start Date: " + startDate)
@@ -102,8 +107,8 @@ export default class App extends React.Component {
               description: props.navigation.getParam('item').title + " live at Toad's!",
               startDate: startDate.toISOString(),
               endDate: endDate.toISOString(),
-              alarm: [{
-                date:-1
+              alarms: [{
+                date: -120
               }]
             })
             .then(() => {

@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 //import all the components we are going to use.
 import Geolocation from '@react-native-community/geolocation';
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 
 
@@ -143,7 +143,7 @@ componentWillUnmount = () => {
 
 handleNavigationLink = () => {
   var url = "https://www.google.com/maps/dir/?api=1" +
-   "&origin=" + this.state.latitude + "," + this.state.longitude + 
+   "&origin=" + this.state.latitude + "," + this.state.longitude +
    "&destination=" + "Toad's+Place,+300+York+St,+New+Haven,+CT+06511"
   console.log(url)
   Linking.canOpenURL(url).then(supported => {
@@ -157,36 +157,47 @@ handleNavigationLink = () => {
 render() {
    return (
      <View style={{flex: 1}}>
-       <MapView style={styles.map} initialRegion={{
-         latitude:41.311587,
-         longitude:-72.929541,
-         latitudeDelta: 1,
-         longitudeDelta: 1
-       }}>
+       <MapView
+         style={styles.map}
+         initialRegion={{
+           latitude:41.311587,
+           longitude:-72.929541,
+           latitudeDelta: 1,
+           longitudeDelta: 1
+         }}
+         provider={PROVIDER_GOOGLE}
+         customMapStyle={mapStyles}
+        >
 
-       {!!this.state.latitude && !!this.state.longitude && <MapView.Marker
+       {!!this.state.latitude && !!this.state.longitude &&
+         <MapView.Marker
           coordinate={{"latitude":this.state.latitude,"longitude":this.state.longitude}}
           title={"Your Location"}
+          image={require('../../assets/images/pin.png')}
         />}
 
-        {!!this.state.cordLatitude && !!this.state.cordLongitude && <MapView.Marker
+        {!!this.state.cordLatitude && !!this.state.cordLongitude &&
+          <MapView.Marker
            coordinate={{"latitude":this.state.cordLatitude,"longitude":this.state.cordLongitude}}
            title={"Your Destination"}
+           image={require('../../assets/images/pin.png')}
          />}
 
-        {!!this.state.latitude && !!this.state.longitude && this.state.x == 'true' && <MapView.Polyline
+        {!!this.state.latitude && !!this.state.longitude && this.state.x == 'true' &&
+        <MapView.Polyline
              coordinates={this.state.coords}
              strokeWidth={2}
-             strokeColor="red"/>
+             strokeColor="green"/>
          }
 
-         {!!this.state.latitude && !!this.state.longitude && this.state.x == 'error' && <MapView.Polyline
+         {!!this.state.latitude && !!this.state.longitude && this.state.x == 'error' &&
+         <MapView.Polyline
            coordinates={[
                {latitude: this.state.latitude, longitude: this.state.longitude},
                {latitude: this.state.cordLatitude, longitude: this.state.cordLongitude},
            ]}
            strokeWidth={2}
-           strokeColor="red"/>
+           strokeColor="green"/>
           }
 
        </MapView>
@@ -212,6 +223,260 @@ render() {
    )
 }
 }
+
+const mapStyles = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#242f3e"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#746855"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#242f3e"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#263c3f"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#6b9a76"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#38414e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#212a37"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9ca5b3"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#746855"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#1f2835"
+      },
+      {
+        "visibility": "on"
+      },
+      {
+        "weight": 8
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#f3d19c"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#2f3948"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#17263c"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#515c6d"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#17263c"
+      }
+    ]
+  }]
 
 const styles = StyleSheet.create({
   map: {

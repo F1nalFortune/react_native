@@ -2,6 +2,7 @@ platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 target 'doracahl' do
+  rn_maps_path = '../node_modules/react-native-maps'
   # Pods for doracahl
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
@@ -31,7 +32,10 @@ target 'doracahl' do
 
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
-  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+  pod 'react-native-maps', path: rn_maps_path
+  pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'GoogleMaps'
+  pod 'Google-Maps-iOS-Utils'
 
 
   pod 'react-native-add-calendar-event', :path => '../node_modules/react-native-add-calendar-event'

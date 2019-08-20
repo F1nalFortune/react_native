@@ -246,7 +246,7 @@ const styles = StyleSheet.create ({
    lineHeight: 30,
    textAlign: 'center',
    textTransform: 'uppercase',
-   fontSize: 24
+   fontSize: 32
  },
  imgWrapper:{
    width: '90%'

@@ -20,6 +20,9 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
+import MapViewDirections from 'react-native-maps-directions'
+
+const { width, height } = Dimensions.get('window');
 
 
 export default class Directions extends Component {
@@ -68,8 +71,58 @@ componentDidMount = () => {
    }
    requestLocationPermission();
  }
+ Geolocation.getCurrentPosition(
+   //Will give you the current location
+    (position) => {
+       const currentLongitude = JSON.stringify(position.coords.longitude);
+       // console.log("Longitude: " + position.coords.longitude)
+       //getting the Longitude from the location json
+       const currentLatitude = JSON.stringify(position.coords.latitude);
+       // console.log("Latitude: " + position.coords.latitude);
+       //getting the Latitude from the location json
+       that.setState({ longitude:currentLongitude });
+       //Setting state Longitude to re re-render the Longitude Text
+       that.setState({ latitude:currentLatitude });
+       //Setting state Latitude to re re-render the Longitude Text
+       this.mergeLot();
+    },
+    (error) => alert(error.message),
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+ );
 }
-
+callLocation(that){
+ //alert("callLocation Called");
+   Geolocation.getCurrentPosition(
+     //Will give you the current location
+      (position) => {
+         const currentLongitude = JSON.stringify(position.coords.longitude);
+         // console.log("Longitude: " + position.coords.longitude)
+         //getting the Longitude from the location json
+         const currentLatitude = JSON.stringify(position.coords.latitude);
+         // console.log("Latitude: " + position.coords.latitude);
+         //getting the Latitude from the location json
+         that.setState({ longitude:currentLongitude });
+         //Setting state Longitude to re re-render the Longitude Text
+         that.setState({ latitude:currentLatitude });
+         //Setting state Latitude to re re-render the Longitude Text
+         this.mergeLot();
+      },
+      (error) => alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+   );
+   that.watchID = Geolocation.watchPosition((position) => {
+     //Will give you the location on location change
+       // console.log(position);
+       const currentLongitude = JSON.stringify(position.coords.longitude);
+       //getting the Longitude from the location json
+       const currentLatitude = JSON.stringify(position.coords.latitude);
+       //getting the Latitude from the location json
+      that.setState({ longitude:currentLongitude });
+      //Setting state Longitude to re re-render the Longitude Text
+      that.setState({ latitude:currentLatitude });
+      //Setting state Latitude to re re-render the Longitude Text
+   });
+}
 mergeLot(){
   if (this.state.latitude != null && this.state.longitude!=null)
    {
@@ -83,7 +136,7 @@ mergeLot(){
 
  }
 
- async getDirections(startLoc, destinationLoc) {
+async getDirections(startLoc, destinationLoc) {
 
        try {
            let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }`)
@@ -104,39 +157,7 @@ mergeLot(){
            return error
        }
    }
-callLocation(that){
- //alert("callLocation Called");
-   Geolocation.getCurrentPosition(
-     //Will give you the current location
-      (position) => {
-         const currentLongitude = JSON.stringify(position.coords.longitude);
-         console.log("Longitude: " + position.coords.longitude)
-         //getting the Longitude from the location json
-         const currentLatitude = JSON.stringify(position.coords.latitude);
-         console.log("Latitude: " + position.coords.latitude);
-         //getting the Latitude from the location json
-         that.setState({ longitude:currentLongitude });
-         //Setting state Longitude to re re-render the Longitude Text
-         that.setState({ latitude:currentLatitude });
-         //Setting state Latitude to re re-render the Longitude Text
-         this.mergeLot();
-      },
-      (error) => alert(error.message),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-   );
-   that.watchID = Geolocation.watchPosition((position) => {
-     //Will give you the location on location change
-       console.log(position);
-       const currentLongitude = JSON.stringify(position.coords.longitude);
-       //getting the Longitude from the location json
-       const currentLatitude = JSON.stringify(position.coords.latitude);
-       //getting the Latitude from the location json
-      that.setState({ longitude:currentLongitude });
-      //Setting state Longitude to re re-render the Longitude Text
-      that.setState({ latitude:currentLatitude });
-      //Setting state Latitude to re re-render the Longitude Text
-   });
-}
+
 componentWillUnmount = () => {
    Geolocation.clearWatch(this.watchID);
 }
@@ -145,7 +166,7 @@ handleNavigationLink = () => {
   var url = "https://www.google.com/maps/dir/?api=1" +
    "&origin=" + this.state.latitude + "," + this.state.longitude +
    "&destination=" + "Toad's+Place,+300+York+St,+New+Haven,+CT+06511"
-  console.log(url)
+  // console.log(url)
   Linking.canOpenURL(url).then(supported => {
       if (!supported) {
           console.log('Can\'t handle url: ' + url);
@@ -155,6 +176,7 @@ handleNavigationLink = () => {
   }).catch(err => console.error('An error occurred', err));
 }
 render() {
+  const GOOGLE_MAPS_APIKEY = "AIzaSyAaUz7R2jehVjycfnHyBJXUg8mmsNZQFOs";
    return (
      <View style={{flex: 1}}>
        <MapView
@@ -167,6 +189,7 @@ render() {
          }}
          provider={PROVIDER_GOOGLE}
          customMapStyle={mapStyles}
+         ref={c => this.mapView = c}
         >
 
        {!!this.state.latitude && !!this.state.longitude &&
@@ -184,20 +207,62 @@ render() {
          />}
 
         {!!this.state.latitude && !!this.state.longitude && this.state.x == 'true' &&
-        <MapView.Polyline
-             coordinates={this.state.coords}
-             strokeWidth={2}
-             strokeColor="green"/>
+        <MapViewDirections
+          origin={{ latitude: this.state.latitude, longitude: this.state.longitude }}
+          destination={{latitude: this.state.cordLatitude, longitude: this.state.cordLongitude}}
+          apikey={GOOGLE_MAPS_APIKEY}
+          strokeWidth={2}
+          strokeColor="green"
+          onStart={(params) => {
+            console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+          }}
+          onReady={result => {
+            console.log('Distance:  km')
+            console.log('Duration: ${result.duration} min.')
+
+            this.mapView.fitToCoordinates(result.coordinates, {
+              edgePadding: {
+                right: (width / 20),
+                bottom: (height / 20),
+                left: (width / 20),
+                top: (height / 20),
+              }
+            });
+          }}
+          onError={(errorMessage) => {
+            // console.log('GOT AN ERROR');
+          }}
+        />
+
          }
 
          {!!this.state.latitude && !!this.state.longitude && this.state.x == 'error' &&
-         <MapView.Polyline
-           coordinates={[
-               {latitude: this.state.latitude, longitude: this.state.longitude},
-               {latitude: this.state.cordLatitude, longitude: this.state.cordLongitude},
-           ]}
+         <MapViewDirections
+           origin={{ latitude: this.state.latitude, longitude: this.state.longitude }}
+           destination={{latitude: this.state.cordLatitude, longitude: this.state.cordLongitude}}
+           apikey={GOOGLE_MAPS_APIKEY}
            strokeWidth={2}
-           strokeColor="green"/>
+           strokeColor="green"
+           onStart={(params) => {
+             console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+           }}
+           onReady={result => {
+             console.log('Distance:  km')
+             console.log('Duration: ${result.duration} min.')
+
+             this.mapView.fitToCoordinates(result.coordinates, {
+               edgePadding: {
+                 right: (width / 20),
+                 bottom: (height / 20),
+                 left: (width / 20),
+                 top: (height / 20),
+               }
+             });
+           }}
+           onError={(errorMessage) => {
+             // console.log('GOT AN ERROR');
+           }}
+         />
           }
 
        </MapView>
@@ -207,15 +272,15 @@ render() {
              style={styles.button}
              onPress={this.handleNavigationLink}
            >
-             <Text>NAVIGATE</Text>
+             <Text  style={styles.buttonText}>NAVIGATE</Text>
            </TouchableOpacity>
          </View>
          <View style={styles.rightButtonWrapper}>
            <TouchableOpacity
              style={styles.button}
-             onPress={() => this.handleNavigationLink}
+             onPress={() => this.props.navigation.navigate('Address')}
            >
-             <Text>VIEW ADDRESS</Text>
+             <Text style={styles.buttonText}>VIEW ADDRESS</Text>
            </TouchableOpacity>
          </View>
        </View>
@@ -484,21 +549,35 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 60,
+    bottom: 0,
     flex: 1
   },
   button:{
+    width: '100%', // is 50% of container width
     borderColor: 'green',
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: 5,
+    borderWidth: 2,
     borderStyle: 'solid',
-    padding: 10,
     textTransform: 'uppercase',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height:50,
-    width: '100%'
+    fontFamily: "Merriweather-Bold",
+    color: 'white',
+    backgroundColor: '#a8d1a936',
+    marginLeft: 5,
+    marginRight: 5
+  },
+  buttonText:{
+    color: "#fff",
+    textShadowColor: "#66ff66",
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
+    textAlign: 'center',
+    fontFamily: "Merriweather-Bold",
+    textTransform: 'uppercase',
+    padding:10,
+    zIndex: 100
   },
   footer:{
     flex:1

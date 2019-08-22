@@ -19,8 +19,11 @@ import Calendar from './src/components/Calendar';
 import Directions from './src/components/Directions';
 import HomeScreen from './src/components/HomeScreen';
 import Lillys from './src/components/Lillys';
+import LillysCarousel from './src/components/galleries/LillysCarousel';
+import RainforestCarousel from './src/components/galleries/RainforestCarousel'
 import Dance from './src/components/Dance';
 import About from './src/components/About';
+import AddressScreen from './src/components/AddressScreen';
 import cio from 'cheerio-without-node-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import Geolocation from '@react-native-community/geolocation';
@@ -300,6 +303,62 @@ export default class App extends React.Component {
       Details: { screen: DetailsScreen }
     });
 
+    const LillyStack = createStackNavigator({
+      Lillys: {
+        screen: Lillys,
+        navigationOptions: {
+          title: "Toad's Place",
+          headerStyle: {
+            backgroundColor: "#000000cc",
+            opacity: .8
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            color: "#fff",
+            textShadowColor: "#66ff66",
+            textShadowOffset: {width: -1, height: 1},
+            textShadowRadius: 10,
+            shadowOpacity: .58,
+            textAlign: 'center',
+            fontFamily: "Merriweather-Bold",
+            textTransform: 'uppercase',
+            fontSize: 24,
+            padding: 10
+          },
+          headerBackTitle: "Back"
+        }
+      },
+      LillysScreen: { screen: LillysCarousel },
+      RainforestScreen: { screen: RainforestCarousel }
+    });
+
+    const DirectionStack = createStackNavigator({
+      Directions: { screen: Directions,
+        navigationOptions: {
+          title: "Toad's Place",
+          headerStyle: {
+            backgroundColor: "#000000cc",
+            opacity: .8
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            color: "#fff",
+            textShadowColor: "#66ff66",
+            textShadowOffset: {width: -1, height: 1},
+            textShadowRadius: 10,
+            shadowOpacity: .58,
+            textAlign: 'center',
+            fontFamily: "Merriweather-Bold",
+            textTransform: 'uppercase',
+            fontSize: 24,
+            padding: 10
+          },
+          headerBackTitle: "Back"
+        }
+      },
+      Address: { screen: AddressScreen }
+    })
+
     const AppContainer = createAppContainer(
       createBottomTabNavigator(
         {
@@ -326,8 +385,8 @@ export default class App extends React.Component {
             }
            },
           Calendar: { screen: CalendarStack },
-          Directions: { screen: Directions},
-          Lillys: { screen: Lillys},
+          Directions: { screen: DirectionStack},
+          Lillys: { screen: LillyStack},
           Dance: { screen: Dance }
         },
         {
@@ -365,7 +424,7 @@ export default class App extends React.Component {
               height: 65
             }
           },
-          lazy: false
+          // lazy: false
         }
       )
     );

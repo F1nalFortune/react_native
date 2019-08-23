@@ -116,7 +116,7 @@ PODS:
     - React
   - RNLaunchNavigator (1.0.6):
     - React
-  - RNSVG (9.6.2):
+  - RNSVG (9.6.4):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -255,10 +255,10 @@ SPEC CHECKSUMS:
   React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
   RNLaunchNavigator: 0b32d9e4b94591e6ea71ecde9cf5f9cbd654b580
-  RNSVG: ff9b094e39dd4a437ebe17d1c7ceed286e75f426
+  RNSVG: a53a5de0d90ec96a6502cc3a4534dfcc0c130622
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
 
-PODFILE CHECKSUM: 01d22e537d3ba28dc4a232f1bbd745661d401f56
+PODFILE CHECKSUM: 187ce6e2d11b910461953d35686d992c64682327
 
 COCOAPODS: 1.7.1

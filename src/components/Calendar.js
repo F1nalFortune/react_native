@@ -9,6 +9,7 @@ import {
   StyleSheet,
   FlatList
 } from 'react-native';
+import LoadingScreen from './LoadingScreen';
 import cio from 'cheerio-without-node-native';
 
 
@@ -16,10 +17,10 @@ export default class Calendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: []
+      items: [],
+      isLoading: true
     }
   }
-
   async componentDidMount(){
     const searchUrl = "http://www.toadsplace.com";
     const response = await fetch(searchUrl);  // fetch page
@@ -155,7 +156,8 @@ export default class Calendar extends Component {
 
     })
     this.setState({
-      items: shows
+      items: shows,
+      isLoading: false
     })
     const items = shows
     return { items }
@@ -169,6 +171,10 @@ export default class Calendar extends Component {
         }}
       />
     );
+
+    if (this.state.isLoading) {
+      return <LoadingScreen />;
+    }
     return(
       <ScrollView>
         {this.state.items.map(item =>

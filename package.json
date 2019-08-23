@@ -24,7 +24,6 @@
     "react-native-maps-directions": "^1.7.0",
     "react-native-parallax": "^0.3.0",
     "react-native-scalable-image": "^0.5.1",
-    "react-native-svg": "^9.6.2",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^3.11.1",
     "rnpm": "^1.9.0"

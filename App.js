@@ -242,8 +242,6 @@ export default class App extends React.Component {
             <Text>ADD EVENT TO CALENDAR</Text>
           </TouchableOpacity>
         </View>
-
-
       </ScrollView>
     )
 
@@ -428,6 +426,7 @@ export default class App extends React.Component {
         }
       )
     );
+
     return <AppContainer />;
   }
 }

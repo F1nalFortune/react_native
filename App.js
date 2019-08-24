@@ -24,8 +24,8 @@ import RainforestCarousel from './src/components/galleries/RainforestCarousel'
 import Dance from './src/components/Dance';
 import About from './src/components/About';
 import AddressScreen from './src/components/AddressScreen';
+import ShowDetails from './src/components/ShowDetails';
 import cio from 'cheerio-without-node-native';
-import RNCalendarEvents from 'react-native-calendar-events';
 import Geolocation from '@react-native-community/geolocation';
 
 
@@ -40,211 +40,10 @@ export default class App extends React.Component {
     }
   }
   componentWillMount (){
-      // iOS
-      RNCalendarEvents.authorizationStatus()
-       .then(status => {
-         // if the status was previous accepted, set the authorized status to state
-         this.setState({ cal_auth: status })
-         if(status === 'undetermined') {
-           // if we made it this far, we need to ask the user for access
-           RNCalendarEvents.authorizeEventStore()
-           .then((out) => {
-             if(out == 'authorized') {
-               // set the new status to the auth state
-               this.setState({ cal_auth: out })
-             }
-           })
-          }
-        })
-      .catch(error => console.warn('Auth Error: ', error));
+
       console.disableYellowBox = true;
-    }
-  handleAddEvent = (props) => {
-    // console.log(JSON.stringify(props,0,2))
-    if(this.state.cal_auth == 'authorized'){
-      handleCreateDate = (date) => {
-        var month = date[0];
-        var year = new Date().getFullYear();
-        var day = date[1];
-        var eventDate = day + " " + month + " " + year;
-        return eventDate;
-      }
-      console.log(handleCreateDate(props.navigation.getParam('item').date))
-      handleCreateTime = (time) => {
-        //ADD 0 PLACEHOLDER
-        var showtime = time.replace("SHOW STARTS @ ", "");
-        var minutes = showtime.substring(showtime.length - 3)
-        showtime = showtime.substring(0, showtime.length - 3)
-        showtime = parseInt(showtime) + 12
-        showtime = showtime.toString();
-        showtime = showtime + minutes
-        return showtime
-      }
-      // console.log(props.navigation.getParam('item').information[3])
-      console.log(handleCreateTime(props.navigation.getParam('item').information[3]))
-
-      var eventDate = handleCreateDate(props.navigation.getParam('item').date);
-      var eventTime = handleCreateTime(props.navigation.getParam('item').information[3])
-      var fullDate = eventDate + " " + eventTime + " GMT-0400 (Eastern Daylight Time)";
-      var startDate = new Date(fullDate)
-
-      var endDate = eventDate + " " + eventTime + " GMT-0400 (Eastern Daylight Time)";
-      endDate = new Date(endDate)
-      endDate.setHours(endDate.getHours() + 1)
-      console.log("Start Date: " + startDate)
-      console.log("End Date: " + endDate)
-      console.log("Title: " + props.navigation.getParam('item').title)
-      Alert.alert(
-        'Confirm',
-        'Add event to calendar?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => {
-            RNCalendarEvents.saveEvent(props.navigation.getParam('item').title, {
-              location:"Toad's Place, 300 York St, New Haven CT 06510",
-              notes: props.navigation.getParam('item').information[2],
-              description: props.navigation.getParam('item').title + " live at Toad's!",
-              startDate: startDate.toISOString(),
-              endDate: endDate.toISOString(),
-              alarms: [{
-                date: -120
-              }]
-            })
-            .then(() => {
-              Alert.alert(
-                'Event Added',
-                'Event successfully added to calendar!',
-                [
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: false},
-              );
-            })
-            .catch(error => {
-              Alert.alert(
-                'Error',
-                'Please try again.',
-                [
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: false},
-              );
-            })
-          }},
-        ],
-        {cancelable: false},
-      );
-    } else {
-      Alert.alert(
-        'Allow Access',
-        'To save event please allow access to you calendar.',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => {
-            RNCalendarEvents.authorizationStatus()
-             .then(status => {
-               // if the status was previous accepted, set the authorized status to state
-               this.setState({ cal_auth: status })
-               if(status === 'undetermined') {
-                 // if we made it this far, we need to ask the user for access
-                 RNCalendarEvents.authorizeEventStore()
-                 .then((out) => {
-                   if(out == 'authorized') {
-                     // set the new status to the auth state
-                     this.setState({ cal_auth: out })
-                   }
-                 })
-                }
-              })
-            .catch(error => console.warn('Auth Error: ', error));
-          }},
-        ],
-        {cancelable: false},
-      );
-    }
-
-    }
+  }
   render() {
-    const DetailsScreen = props => (
-      <ScrollView>
-        <View style={styles.titleWrapper}>
-          <Text style={styles.title}>{props.navigation.getParam('item').title}</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => this.handleAddEvent(props)}
-        >
-          <View style={styles.imgWrapper}>
-            <Image
-               width={Dimensions.get('window').width}
-               style={styles.image}
-               resizeMode={'contain'}   /* <= changed  */
-               source={{uri: props.navigation.getParam('item').img }}/>
-          </View>
-        </TouchableOpacity>
-        <View
-          style={styles.dateWrapper}>
-          <Text
-            style={styles.date}>
-              {props.navigation.getParam('item').date[2]} \\
-              <Text style={{fontWeight: 'bold'}}>
-                {props.navigation.getParam('item').date[0]}
-                {props.navigation.getParam('item').date[1]}
-              </Text>
-          </Text>
-        </View>
-        <View style={styles.wrapper}>
-          <View style={styles.act}>
-            {props.navigation.getParam('item').acts.map(act => <Text key={props.navigation.getParam('item').acts.indexOf(act)}>{act}</Text>)}
-          </View>
-          <View style={styles.info}>
-            <Text>{props.navigation.getParam('item').information[0]}</Text>
-            <Text>{props.navigation.getParam('item').information[1]}</Text>
-            <Text>{props.navigation.getParam('item').information[2]}</Text>
-            <Text>{props.navigation.getParam('item').information[3]}</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.starDetail}>{props.navigation.getParam('item').starInfo}</Text>
-        </View>
-        <View style={styles.starDetail}>
-          {props.navigation.getParam('item').infoLinks.map(infoLink =>
-            <Text
-              key={props.navigation.getParam('item').infoLinks.indexOf(infoLink)}
-              style={styles.infoLink}
-            >
-              {infoLink.text}**
-            </Text>)}
-        </View>
-        <View style={styles.footer}>
-          <Text>{props.navigation.getParam('item').information[4]}</Text>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => Linking.openURL(props.navigation.getParam('item').ticket)}
-          >
-            <Text>GET TIX</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.handleAddEvent(props)}
-          >
-            <Text>ADD EVENT TO CALENDAR</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    )
-
     const HomeStack = createStackNavigator({
       HomeScreen: {
         screen: HomeScreen,
@@ -298,7 +97,7 @@ export default class App extends React.Component {
           headerBackTitle: "Events"
         }
       },
-      Details: { screen: DetailsScreen }
+      Details: { screen: ShowDetails }
     });
 
     const LillyStack = createStackNavigator({
@@ -421,8 +220,7 @@ export default class App extends React.Component {
             style:{
               height: 65
             }
-          },
-          // lazy: false
+          }
         }
       )
     );

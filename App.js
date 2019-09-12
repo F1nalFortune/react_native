@@ -16,7 +16,7 @@ import Image from 'react-native-scalable-image';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Calendar from './src/components/Calendar';
-import Directions from './src/components/Directions';
+import NewDirections from './src/components/Directions';
 import HomeScreen from './src/components/HomeScreen';
 import Lillys from './src/components/Lillys';
 import LillysCarousel from './src/components/galleries/LillysCarousel';
@@ -130,7 +130,7 @@ export default class App extends React.Component {
     });
 
     const DirectionStack = createStackNavigator({
-      Directions: { screen: Directions,
+      Directions: { screen: NewDirections,
         navigationOptions: {
           title: "Toad's Place",
           headerStyle: {

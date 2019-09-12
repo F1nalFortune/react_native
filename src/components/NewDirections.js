@@ -20,11 +20,11 @@ import {
 
 
 
-export default class Directions extends Component {
+export default class NewDirections extends Component {
 
 render(){
   return(
-    
+    <Text>Test</Text>
   )
 }
 

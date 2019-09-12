@@ -33,19 +33,19 @@ target 'doracahl' do
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
   pod 'react-native-maps', path: rn_maps_path
-  pod 'react-native-google-maps', :path => rn_maps_path
-  pod 'GoogleMaps'
-  pod 'Google-Maps-iOS-Utils'
+  # pod 'react-native-google-maps', :path => rn_maps_path
+  # pod 'GoogleMaps'
+  # pod 'Google-Maps-iOS-Utils'
 
-
+  pod 'MapboxNavigation', '~> 0.37'
   pod 'react-native-add-calendar-event', :path => '../node_modules/react-native-add-calendar-event'
 
   target 'doracahlTests' do
     inherit! :search_paths
     # Pods for testing
   end
-
-  use_native_modules!
+  use_frameworks!
+  # use_native_modules!
 end
 
 target 'doracahl-tvOS' do
